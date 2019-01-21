@@ -87,15 +87,15 @@ public class Building {
      * @param occupant
      */
     void setNewRoom(Person occupant) {
-        int cRoom = whichRoom(occupant.getPersonLocation());
+        int cRoom = whichRoom(occupant.getLocation());
         int dRoom = 0;
         while (dRoom == cRoom) dRoom = ranGen.nextInt(allRooms.size());    // get another room randomlt
         occupant.clearPath();
 
         occupant.clearPath();
         for (int i = 0; i < allRooms.size(); i++) {
-            //System.out.println("Person X: " + occupant.getPersonLocation().x + "Room door X: " + allRooms.get(i).getByDoor(1).x);
-            if (occupant.getPersonLocation().x == allRooms.get(i).getByDoor(-1).x) {
+            //System.out.println("Person X: " + occupant.getLocation().x + "Room door X: " + allRooms.get(i).getByDoor(1).x);
+            if (occupant.getLocation().x == allRooms.get(i).getByDoor(-1).x) {
                 occupant.hasReachedDoor = true;
                 allRooms.get(i).CountOfPeople++;
                 break;
@@ -139,7 +139,7 @@ public class Building {
         for (int i = 0; i < allRooms.size(); i++) {
             int countOfPeopleInRoom = 0;
             for (Person pr : occupants) {
-                int roomLocation = whichRoom(pr.getPersonLocation());
+                int roomLocation = whichRoom(pr.getLocation());
                 if(roomLocation == i)
                 {
                     countOfPeopleInRoom++;
@@ -189,7 +189,7 @@ public class Building {
         for (Room r : allRooms) r.showRoom(bi);
         // loop through array of all rooms, displaying each
         for(Person occupant : occupants) {
-            occupant.showPerson(bi);
+            occupant.draw(bi);
         }
     }
 
