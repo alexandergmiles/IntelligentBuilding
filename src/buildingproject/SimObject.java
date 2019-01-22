@@ -6,13 +6,14 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
+ * @author Alexander Miles
  * Base SimObject that other object in the simulation can inherit
  */
 public abstract class SimObject {
     private Point Location;
     private ArrayList<Point> Path;
     private boolean Stopped;
-
+    private char colour;
     /**
      * Constructor to create a SimObject at given location
      * @param Point position
@@ -21,6 +22,7 @@ public abstract class SimObject {
     {
         Location = position;
         Path = new ArrayList<>();
+        colour = 'r';
     }
     /**
      * Get the current position for the SimObject object
@@ -75,13 +77,17 @@ public abstract class SimObject {
         Stopped = value;
     }
 
+    public void setColour(char value)
+    {
+        colour = value;
+    }
     /**
      * Draw SimObject in building
      * @param bi Building interface
      */
     public void draw(BuildingGUI gui)
     {
-        gui.showItem(Location.x, Location.y, 4, 'r');
+        gui.showItem(Location.x, Location.y, 4, colour);
     }
 
     /**

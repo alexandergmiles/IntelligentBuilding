@@ -1,9 +1,15 @@
 package buildingproject;
 
+/**
+ * @author Alexander Miles
+ */
 public class Config {
+    //instance used to contain the single instance
     private static Config instance;
+    //Some variables that could be used in sim
     private int sleepTime;
     private int currentPeople;
+    //The path the config file will be saved
     private String saveLocation;
 
     /**
@@ -64,5 +70,15 @@ public class Config {
     public void setSaveLocation(String value)
     {
         saveLocation = value;
+    }
+
+    public void SaveConfig()
+    {
+
+    }
+
+    public void LoadConfig()
+    {
+        
     }
 }

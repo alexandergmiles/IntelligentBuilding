@@ -1,7 +1,11 @@
 package buildingproject;
 
+import javafx.scene.chart.PieChart;
+import javafx.stage.Stage;
+
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -23,6 +27,10 @@ public class Building {
     private boolean firstRun = true;
     private int timeInRoom = 0;
     private Config config;
+    private int iterations;
+    private ArrayList<PieChart.Data> roomsVisited;
+    private ArrayList<Hoover> hoovers;
+    private int[] rooms;
     /**
      * Construct a building
      */
@@ -30,10 +38,18 @@ public class Building {
         allRooms = new ArrayList<Room>();        // create space for rooms
         occupants = new ArrayList<Person>();
         occupiedRooms = new ArrayList<Room>();
+        roomsVisited = new ArrayList<PieChart.Data>();
+        hoovers = new ArrayList<Hoover>();
         ranGen = new Random();                  // create object for generating random numbers
         config = Config.getInstance();          //Singleton pattern: we need to get the only instance
         config.setCurrentPeople(20);
         setBuilding(bs);                        // now set building using string bs
+
+        rooms = new int[allRooms.size()];
+        for(int i = 0; i < allRooms.size(); i++)
+        {
+            rooms[i] = 0;
+        }
     }
 
     private Room getRoom(int id) {
@@ -91,10 +107,7 @@ public class Building {
         int dRoom = 0;
         while (dRoom == cRoom) dRoom = ranGen.nextInt(allRooms.size());    // get another room randomlt
         occupant.clearPath();
-
-        occupant.clearPath();
         for (int i = 0; i < allRooms.size(); i++) {
-            //System.out.println("Person X: " + occupant.getLocation().x + "Room door X: " + allRooms.get(i).getByDoor(1).x);
             if (occupant.getLocation().x == allRooms.get(i).getByDoor(-1).x) {
                 occupant.hasReachedDoor = true;
                 allRooms.get(i).CountOfPeople++;
@@ -107,12 +120,16 @@ public class Building {
             timeInRoom++;
             firstRun = false;
         }else if(occupant.hasReachedDoor && timeInRoom == 1) {
+            int room = whichRoom(occupant.getLocation());
+            rooms[room]++;
             occupant.setPath(allRooms.get(dRoom).getByDoor(-1));
             timeInRoom = 0;
         }
         else if (occupant.hasReachedDoor) {
             if (timeInRoom == 1) {
                 occupant.setPath(allRooms.get(dRoom).getByDoor(-1));
+                int room = whichRoom(occupant.getLocation());
+                rooms[room]++;
             } else {
                 occupant.setPath(allRooms.get(cRoom).getRandom(ranGen));
                 timeInRoom++;
@@ -158,7 +175,6 @@ public class Building {
             allRooms.get(i).CountOfPeople = countOfPeopleInRoom;
         }
     }
-
     /**
      * calculate a random room number
      *
@@ -178,6 +194,11 @@ public class Building {
 
             allRooms.get(0).CountOfPeople = 1;
         }
+        for(int i = 0; i < 3; i++)
+        {
+            hoovers.add(new Hoover(getRoom(i).getRandom(ranGen)));
+            hoovers.get(i).setColour('b');
+        }
     }
 
     /**
@@ -191,6 +212,10 @@ public class Building {
         for(Person occupant : occupants) {
             occupant.draw(bi);
         }
+        for(Hoover hoover : hoovers)
+        {
+            hoover.draw(bi);
+        }
     }
 
     public void update() {
@@ -202,6 +227,12 @@ public class Building {
             if (occupant.getStopped()) setNewRoom(occupant);
             else occupant.update();
         }
+        for(Hoover hv : hoovers)
+        {
+            hv.setPath(allRooms.get(whichRoom(hv.getLocation())).getRandom(ranGen));
+            hv.update();
+        }
+        iterations++;
     }
 
     /**
@@ -225,5 +256,22 @@ public class Building {
         for (Room r : allRooms) s = s + r.toString() + "\n";
         //s = s + occupant.toString();
         return s;
+    }
+
+    public void showGraph()
+    {
+        if(iterations > 1000)
+        {
+            PieChartGenerator gen = new PieChartGenerator();
+            for(int i = 0; i < rooms.length; i++)
+            {
+                roomsVisited.add(new PieChart.Data(Integer.toString(i), rooms[i]));
+            }
+            gen.setPieChartData(roomsVisited);
+            Stage newStage = new Stage();
+            gen.start(newStage);
+            roomsVisited.clear();
+            iterations = 0;
+        }
     }
 }

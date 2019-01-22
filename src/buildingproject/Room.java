@@ -50,7 +50,7 @@ public abstract class Room {
 	public int getDoorSize() {
 		return ds;
 	}
-
+	public void setDoorSize(int value) { ds = value; }
 	/**
 	 * doWall			draw wall, but check if door there
 	 * @param bi		interface into which it is shown

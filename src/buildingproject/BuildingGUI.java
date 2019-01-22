@@ -89,6 +89,14 @@ public class BuildingGUI extends Application {
         Menu mFile = new Menu("File");
         //Exit menu item
         MenuItem mExit = new MenuItem("Exit");
+        MenuItem showGraph = new MenuItem("Show graph");
+        showGraph.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                theBuilding.showGraph();
+            }
+        });
+
         //Action for exiting
         mExit.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -98,7 +106,7 @@ public class BuildingGUI extends Application {
         });
         //Add menu items
         mFile.getItems().addAll(mExit);
-
+        mFile.getItems().add(showGraph);
         Menu mHelp = new Menu("Help");
         MenuItem mWelcome = new MenuItem("Welcome");
         mWelcome.setOnAction(new EventHandler<ActionEvent>() {
@@ -118,7 +126,7 @@ public class BuildingGUI extends Application {
      * @return HBox
      */
     private HBox setButtons() {
-
+        //Defining the event handlers for the events
         Button btnNewBuild = new Button("New Building");
         btnNewBuild.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -244,6 +252,7 @@ public class BuildingGUI extends Application {
             {
                 RoomStatus.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
             }
+            //Add to frame
             rtPane.getChildren().add(RoomStatus);
         }
 
